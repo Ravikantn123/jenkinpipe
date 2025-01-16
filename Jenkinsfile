@@ -1,47 +1,38 @@
 pipeline {
     agent any
 
-    environment {
-        DOCKER_IMAGE = 'node-app' // Replace with your desired image name
-    }
-
     stages {
+        stage('Checkout SCM') {
+            steps {
+                checkout scm
+            }
+        }
+
         stage('Clone Repository') {
             steps {
                 echo 'Cloning repository...'
-                git branch: 'main', url: 'https://github.com/Ravikantn123/java-Ptoject.git'
-                // Replace with your GitHub repository URL and branch name
+                git 'https://github.com/Ravikantn123/java-Ptoject.git'
             }
         }
 
         stage('Build Docker Image') {
             steps {
                 echo 'Building Docker image...'
-                sh """
-                cd /var/lib/jenkins/workspace/cicdpipe/node_project
-                docker build -t $DOCKER_IMAGE .
-                """
+                // Ensure Dockerfile exists in the correct location
+                sh 'cd /var/lib/jenkins/workspace/cicdpipe/node_project && docker build -t node-app .'
             }
         }
 
         stage('Deploy to EC2 Agent') {
             steps {
-                echo 'Deploying on EC2 agent...'
-                sh """
-                # Run the new Docker container
-                docker run -d --name Node-container -p 8000:8000 $DOCKER_IMAGE
-                """
-                // Replace `your-container-name` and port mappings as necessary
+                echo 'Deploying to EC2 Agent...'
+                // Add deployment commands here
             }
         }
     }
-
     post {
         always {
             echo 'Pipeline execution completed.'
-        }
-        success {
-            echo 'Deployment successful!'
         }
         failure {
             echo 'Deployment failed!'
