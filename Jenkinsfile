@@ -1,5 +1,5 @@
 pipeline {
-    agent { label 'ec2-agent' } // Replace with your EC2 agent's label
+    agent any
 
     environment {
         DOCKER_IMAGE = 'node-app' // Replace with your desired image name
