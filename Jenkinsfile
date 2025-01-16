@@ -19,7 +19,8 @@ pipeline {
             steps {
                 echo 'Building Docker image...'
                 // Ensure Dockerfile exists in the correct location
-                sh 'cd /var/lib/jenkins/workspace/cicdpipe/node_project && docker build -t node-app .'
+                sh 'docker build -t node-app -f /var/lib/jenkins/workspace/cicdpipe/node_project .'
+                
             }
         }
 
@@ -27,6 +28,7 @@ pipeline {
             steps {
                 echo 'Deploying to EC2 Agent...'
                 // Add deployment commands here
+                sh 'docker run -d -p 8000:8000 node-app'
             }
         }
     }
